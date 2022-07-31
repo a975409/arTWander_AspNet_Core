@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using arTWander.Data;
 
@@ -11,9 +12,10 @@ using arTWander.Data;
 namespace arTWander.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20220731022746_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,20 +42,6 @@ namespace arTWander.Migrations
                     b.HasKey("RoleId");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = 1,
-                            Active = true,
-                            Name = "admin"
-                        },
-                        new
-                        {
-                            RoleId = 2,
-                            Active = true,
-                            Name = "common"
-                        });
                 });
 
             modelBuilder.Entity("arTWander.Models.User", b =>
@@ -113,15 +101,6 @@ namespace arTWander.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            Email = "a975409@gmail.com",
-                            Password = "acs856745",
-                            RoleId = 1
-                        });
                 });
 
             modelBuilder.Entity("arTWander.Models.User", b =>

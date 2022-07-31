@@ -1,0 +1,125 @@
+﻿@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<!-- 登入頁面 -->
+<div class="container">
+    <!-- 登入及註冊鈕 starts -->
+    <ul class="nav nav-tabs d-flex justify-content-center border-bottom-0 " id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active border-0 bg-transparent" id="loginForm-tab" data-toggle="tab" data-target="#loginForm" type="button" role="tab" aria-controls="loginForm" aria-selected="true">
+                <h4>會員登入</h4>
+            </button>
+        </li>
+    </ul>
+    <!-- 登入及註冊鈕 ends -->
+    <div class="tab-content">
+        <!-- 登入欄位 starts -->
+        <div id="loginForm" action="" class="tab-pane fade show active " role="tabpanel" aria-labelledby="loginForm-tab">
+            <div class="row my-3 col-12 col-md-6 mx-auto">
+                <div class="w-100 mx-auto text-center">
+                    <label for="account">Email：</label>
+                    <input id="account" v-model="email" type="text" class="border-bottom border-top-0 border-left-0 border-right-0 bg-transparent">
+                </div>
+            </div>
+            <div class="row my-3 col-12 col-md-6 mx-auto">
+                <div class="w-100 mx-auto text-center">
+                    <label for="pwd">密碼：</label>
+                    <input id="pwd" v-model="password" type="password" class="border-bottom border-top-0 border-left-0 border-right-0 bg-transparent">
+                </div>
+            </div>
+            <br>
+            <div class="row mx-auto col-12 col-md-6 col-lg-4 justify-content-between">
+                <div class="col-5 mx-auto mx-auto">
+                    <input id="remember" type="CheckBox">
+                    <label for="remember">記住帳號</label>
+                </div>
+                <div class="col-7 mx-auto text-right">
+                    <a asp-action="Register" class="font-weight-light">註冊帳號</a> / <a class="font-weight-light">忘記密碼</a>
+                </div>
+            </div>
+            <div class="row mt-5 mb-2 justify-content-center">
+                <div class="col-6 col-md-3 mx-auto d-flex justify-content-center">
+                    <button v-on:click="userLogin" type="button" class="btn btn-outline-secondary border-0 bg-pink text-white w-100" data-toggle="modal" data-target="#loginVerifyFalse">登入</button>
+                </div>
+            </div>
+        </div>
+        <!-- 登入欄位 ends -->
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var loginFormApp = new Vue({
+            el: '#loginForm',
+            data: {
+                email: '',
+                password: ''
+            },
+            methods: {
+                userLogin: function() {
+                    axios.post('/Login/api/UserLogin', {
+                        Email: this.email,
+                        Password: this.password
+                    })
+                        .then((response) => {
+                            //console.log(response)
+                            //let timerInterval
+                            Swal.fire({
+                                title: '登入成功!',
+                                //html: 'I will close in <b></b> milliseconds.',
+                                icon: 'success',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                //didOpen: () => {
+                                //    Swal.showLoading()
+                                //    const b = Swal.getHtmlContainer().querySelector('b')
+                                //    timerInterval = setInterval(() => {
+                                //        b.textContent = Swal.getTimerLeft()
+                                //    }, 100)
+                                //},
+                                //willClose: () => {
+                                //    clearInterval(timerInterval)
+                                //}
+                            }).then((result) => {
+                                /* Read more about handling dismissals below */
+                                location.href = "/Home/Index";
+                            })
+                        })
+                        .catch((error) => {
+                            //console.log(error.response)
+
+                            let message = '';
+
+                            if (error.response.status == 400) {
+                                let errors = error.response.data.errors;
+
+                                for (let key in errors) {
+                                    errors[key].forEach(function(currentValue) {
+                                        message += currentValue + '<br>';
+                                    });
+                                }
+                            }
+                            else {
+                                message = error.response.data;
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: '登入失敗',
+                                html: message
+                            })
+                        });
+                }
+            }
+        });
+
+        let register = '@TempData["Success"]';
+        if (register === 'True') {
+            Swal.fire({
+                title: '會員註冊成功!',
+                icon: 'success'
+            })
+        }
+    </script>
+}

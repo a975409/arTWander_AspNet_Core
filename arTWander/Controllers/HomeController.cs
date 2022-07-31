@@ -16,6 +16,7 @@ namespace arTWander.Controllers
             _logger = logger;
         }
 
+        [Authorize()]
         [HttpGet("Index")]
         public IActionResult Index()
         {
@@ -32,13 +33,6 @@ namespace arTWander.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        [Authorize("Login")]
-        [Route("api/LoginOK")]
-        public IActionResult LoginOK()
-        {
-            return Ok("登入成功");
         }
     }
 }

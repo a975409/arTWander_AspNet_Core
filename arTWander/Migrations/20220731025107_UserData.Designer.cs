@@ -12,8 +12,8 @@ using arTWander.Data;
 namespace arTWander.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220730144733_modifyDataTypeNull")]
-    partial class modifyDataTypeNull
+    [Migration("20220731025107_UserData")]
+    partial class UserData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,13 +24,47 @@ namespace arTWander.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("arTWander.Models.User", b =>
+            modelBuilder.Entity("arTWander.Models.Role", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"), 1L, 1);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            Active = true,
+                            Name = "admin"
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            Active = true,
+                            Name = "common"
+                        });
+                });
+
+            modelBuilder.Entity("arTWander.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
                     b.Property<int?>("AccessFailedCount")
                         .HasColumnType("int");
@@ -67,15 +101,45 @@ namespace arTWander.Migrations
                     b.Property<string>("Picture")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            Email = "a975409@gmail.com",
+                            Password = "acs856745",
+                            RoleId = 1
+                        });
+                });
+
+            modelBuilder.Entity("arTWander.Models.User", b =>
+                {
+                    b.HasOne("arTWander.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("arTWander.Models.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

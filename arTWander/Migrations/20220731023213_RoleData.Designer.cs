@@ -12,8 +12,8 @@ using arTWander.Data;
 namespace arTWander.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220730140332_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20220731023213_RoleData")]
+    partial class RoleData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,34 +24,54 @@ namespace arTWander.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("arTWander.Models.User", b =>
+            modelBuilder.Entity("arTWander.Models.Role", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"), 1L, 1);
 
-                    b.Property<int>("AccessFailedCount")
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("arTWander.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Birthday")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
+
+                    b.Property<int?>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("EmailConfirmed")
+                    b.Property<bool?>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("LastLoginDateTime")
+                    b.Property<DateTime?>("LastLoginDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("LockoutEnabled")
+                    b.Property<bool?>("LockoutEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("LockoutEndDateTime")
+                    b.Property<DateTime?>("LockoutEndDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -67,15 +87,36 @@ namespace arTWander.Migrations
                     b.Property<string>("Picture")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("TwoFactorEnabled")
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("arTWander.Models.User", b =>
+                {
+                    b.HasOne("arTWander.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("arTWander.Models.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

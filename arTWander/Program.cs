@@ -6,10 +6,13 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews(options => {
+builder.Services.AddControllersWithViews(options =>
+{
     //所有controller都要驗證
     //options.Filters.Add(new AuthorizeFilter());
-});
+}).AddRazorRuntimeCompilation();
+
+
 
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("arTWanderDatabase")));
 builder.Services.AddSession(options =>
