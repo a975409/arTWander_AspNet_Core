@@ -31,29 +31,29 @@
             </div>*@
             <div class="row mt-4 justify-content-center ">
                 <label asp-for="Email" class="col-4 col-md-2"></label>
-                <input asp-for="Email" v-model="email" class="col-6" />
+                <input asp-for="Email" v-model="email.data" class="col-6" />
             </div>
             <div class="row justify-content-center ">
                 <label class="col-4 col-md-2"></label>
-                <span asp-validation-for="Email" class="text-danger col-6" style="padding:0px" v-bind:class="{'field-validation-error':emailError,'field-validation-valid':!emailError}">{{emailErrorMsg}}</span>
+                <span asp-validation-for="Email" class="text-danger col-6" style="padding:0px" v-bind:class="{'field-validation-error':email.error,'field-validation-valid':!email.error}">{{email.errorMsg}}</span>
             </div>
 
             <div class="row mt-4 justify-content-center ">
                 <label asp-for="Password" class="col-4 col-md-2"></label>
-                <input asp-for="Password" v-model="password" class="col-6" type="password" />
+                <input asp-for="Password" v-model="password.data" class="col-6" type="password" />
             </div>
             <div class="row justify-content-center ">
                 <label class="col-4 col-md-2"></label>
-                <span asp-validation-for="Password" class="text-danger col-6" style="padding:0px" v-bind:class="{'field-validation-error':passwordError,'field-validation-valid':!passwordError}">{{passwordErrorMsg}}</span>
+                <span asp-validation-for="Password" class="text-danger col-6" style="padding:0px" v-bind:class="{'field-validation-error':password.error,'field-validation-valid':!password.error}">{{password.errorMsg}}</span>
             </div>
 
             <div class="row mt-4 justify-content-center ">
                 <label asp-for="PasswordConfirmed" class="col-4 col-md-2"></label>
-                <input asp-for="PasswordConfirmed" v-model="passwordConfirmed" class="col-6" type="password" />
+                <input asp-for="PasswordConfirmed" v-model="passwordConfirmed.data" class="col-6" type="password" />
             </div>
             <div class="row justify-content-center ">
                 <label class="col-4 col-md-2"></label>
-                <span asp-validation-for="PasswordConfirmed" class="text-danger col-6" v-bind:class="{'field-validation-error':error,'field-validation-valid':!error}" style="padding:0px">{{passwordConfirmedErrorMsg}}</span>
+                <span asp-validation-for="PasswordConfirmed" class="text-danger col-6" v-bind:class="{'field-validation-error':passwordConfirmed.error,'field-validation-valid':!passwordConfirmed.error}" style="padding:0px">{{passwordConfirmed.errorMsg}}</span>
             </div>
 
             <div class="row mt-4 justify-content-center ">
@@ -105,25 +105,30 @@
         var RegisterApp = new Vue({
             el: '#Register',
             data: {
-                email: '',
-                emailError: false,
-                emailErrorMsg: '',
-                password: '',
-                passwordError: false,
-                passwordErrorMsg: '',
-                passwordConfirmed: '',
-                passwordConfirmedErrorMsg: '',
-                error: false
+                email: { data: '', error: false, errorMsg: '' },
+                password: { data: '', error: false, errorMsg: '' },
+                passwordConfirmed: { data: '', error: false, errorMsg: '' }
+            },
+            computed: {
+                getEmail: function() {
+                    return this.email.data;
+                },
+                getPassword: function() {
+                    return this.password.data;
+                },
+                getPasswordConfirmed: function() {
+                    return this.passwordConfirmed.data;
+                }
             },
             watch: {// 如果 `email` 发生改变，这个函数就会运行
-                email: function(newQuestion, oldQuestion) {
+                getEmail: function(newQuestion, oldQuestion) {
                     this.debouncedGetEmail();
                 },
-                password: function(newQuestion, oldQuestion) {
+                getPassword: function(newQuestion, oldQuestion) {
                     this.pwdCompare();
                     this.debouncedGetPassword();
                 },
-                passwordConfirmed: function(newQuestion, oldQuestion) {
+                getPasswordConfirmed: function(newQuestion, oldQuestion) {
                     this.pwdCompare();
                 }
             },
@@ -138,50 +143,50 @@
             },
             methods: {
                 pwdCompare: function() {
-                    if (this.password != this.passwordConfirmed) {
-                        this.passwordConfirmedErrorMsg = '與輸入的密碼不一致';
-                        this.error = true;
+                    if (this.password.data != this.passwordConfirmed.data) {
+                        this.passwordConfirmed.error = true;
+                        this.passwordConfirmed.errorMsg = '與輸入的密碼不一致';
                     }
                     else {
-                        this.passwordConfirmedErrorMsg = '';
-                        this.error = false;
+                        this.passwordConfirmed.error = false;
+                        this.passwordConfirmed.errorMsg = '';
                     }
                 },
                 CheckEmail: function() {
-                    axios.get(`/Login/api/CheckEmail?Email=${this.email}`)
+                    axios.get(`/Login/api/CheckEmail?Email=${this.email.data}`)
                         .then((response) => {
                             console.log(response);
                             let errorMsg = response.data;
 
                             if (errorMsg != '') {
-                                this.emailErrorMsg = errorMsg;
-                                this.emailError = true;
+                                this.email.error = true;
+                                this.email.errorMsg = errorMsg;
                             }
                             else {
-                                this.emailErrorMsg = '';
-                                this.emailError = false;
+                                this.email.error = false;
+                                this.email.errorMsg = '';
                             }
                         })
                         .catch((error) => console.log(error));
                 },
                 CheckPassword: function() {
-                    axios.get(`/Login/api/CheckPassword?Password=${this.password}`)
+                    axios.get(`/Login/api/CheckPassword?Password=${this.password.data}`)
                         .then((response) => {
                             console.log(response);
                             let errorMsg = response.data;
 
                             if (errorMsg != '') {
-                                this.passwordErrorMsg = errorMsg;
-                                this.passwordError = true;
+                                this.password.error = true;
+                                this.password.errorMsg = errorMsg;
                             }
                             else {
-                                this.passwordErrorMsg = '';
-                                this.passwordError = false;
+                                this.password.error = false;
+                                this.password.errorMsg = '';
                             }
                         })
                         .catch((error) => console.log(error));
                 }
             }
-        })
+        });
     </script>
 }

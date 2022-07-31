@@ -11,7 +11,6 @@ using System.Security.Cryptography;
 
 namespace arTWander.Controllers
 {
-	//[ApiController]
 	[Route("[controller]")]
 	public class LoginController : Controller
 	{
