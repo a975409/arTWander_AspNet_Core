@@ -12,8 +12,8 @@ using arTWander.Data;
 namespace arTWander.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220731025107_UserData")]
-    partial class UserData
+    [Migration("20220807145126_insertdata")]
+    partial class insertdata
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,7 +121,7 @@ namespace arTWander.Migrations
                         {
                             UserId = 1,
                             Email = "a975409@gmail.com",
-                            Password = "acs856745",
+                            Password = "F5297FBE0319A5C2B3DF2FEC7176D688",
                             RoleId = 1
                         });
                 });

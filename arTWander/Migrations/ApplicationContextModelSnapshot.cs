@@ -119,7 +119,7 @@ namespace arTWander.Migrations
                         {
                             UserId = 1,
                             Email = "a975409@gmail.com",
-                            Password = "acs856745",
+                            Password = "F5297FBE0319A5C2B3DF2FEC7176D688",
                             RoleId = 1
                         });
                 });

@@ -1,4 +1,5 @@
-﻿@model arTWander.Models.Dtos.RegisterUser
+﻿@using arTWander.Models.Dtos
+@model RegisterUser
 @{
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
 }
@@ -14,8 +15,7 @@
     <!-- 歡迎 ends -->
     <div class="tab-content" id="Register">
         <!-- 初次登入設定資料 starts -->
-        <form method="post" action="Register" class="container p-0 w-100 rounded-lg mt-5 ">
-            @Html.AntiForgeryToken()
+        <div class="container p-0 w-100 rounded-lg mt-5 ">
 
             @*<div class="row mt-5 justify-content-center ">
             <!-- <label class="col-7 col-md-2 " for="userAvatar">頭像</label> -->
@@ -31,71 +31,64 @@
             </div>*@
             <div class="row mt-4 justify-content-center ">
                 <label asp-for="Email" class="col-4 col-md-2"></label>
-                <input asp-for="Email" v-model="email.data" class="col-6" />
-            </div>
-            <div class="row justify-content-center ">
-                <label class="col-4 col-md-2"></label>
-                <span asp-validation-for="Email" class="text-danger col-6" style="padding:0px" v-bind:class="{'field-validation-error':email.error,'field-validation-valid':!email.error}">{{email.errorMsg}}</span>
+                <div class="col-6" style="padding:0px;">
+                    <input id="Email" name="Email" v-model="form.Email" style="width:100%;" />
+                    <span class="text-danger" style="white-space: pre-wrap;">{{error.Email}}</span>
+                </div>
             </div>
 
             <div class="row mt-4 justify-content-center ">
                 <label asp-for="Password" class="col-4 col-md-2"></label>
-                <input asp-for="Password" v-model="password.data" class="col-6" type="password" />
-            </div>
-            <div class="row justify-content-center ">
-                <label class="col-4 col-md-2"></label>
-                <span asp-validation-for="Password" class="text-danger col-6" style="padding:0px" v-bind:class="{'field-validation-error':password.error,'field-validation-valid':!password.error}">{{password.errorMsg}}</span>
+                <div class="col-6" style="padding:0px;">
+                    <input id="Password" name="Password" v-model="form.Password" type="password" style="width:100%;" />
+                    <span class="text-danger" style="white-space: pre-wrap;">{{error.Password}}</span>
+                </div>
             </div>
 
             <div class="row mt-4 justify-content-center ">
                 <label asp-for="PasswordConfirmed" class="col-4 col-md-2"></label>
-                <input asp-for="PasswordConfirmed" v-model="passwordConfirmed.data" class="col-6" type="password" />
-            </div>
-            <div class="row justify-content-center ">
-                <label class="col-4 col-md-2"></label>
-                <span asp-validation-for="PasswordConfirmed" class="text-danger col-6" v-bind:class="{'field-validation-error':passwordConfirmed.error,'field-validation-valid':!passwordConfirmed.error}" style="padding:0px">{{passwordConfirmed.errorMsg}}</span>
+                <div class="col-6" style="padding:0px;">
+                    <input id="PasswordConfirmed" name="PasswordConfirmed" v-model="form.PasswordConfirmed" type="password" style="width:100%;" />
+                    <span class="text-danger" style="white-space: pre-wrap;">{{error.PasswordConfirmed}}</span>
+                </div>
             </div>
 
             <div class="row mt-4 justify-content-center ">
                 <label asp-for="UserName" class="col-4 col-md-2"></label>
-                <input asp-for="UserName" class="col-6" />
-            </div>
-            <div class="row justify-content-center ">
-                <label class="col-4 col-md-2"></label>
-                <span asp-validation-for="UserName" class="text-danger col-6" style="padding:0px"></span>
+                <div class="col-6" style="padding:0px;">
+                    <input id="UserName" name="UserName" v-model="form.UserName" type="text" style="width:100%;" />
+                    <span class="text-danger" style="white-space: pre-wrap;">{{error.UserName}}</span>
+                </div>
             </div>
 
             <div class="row mt-4 justify-content-center ">
                 <label asp-for="Name" class="col-4 col-md-2"></label>
-                <input asp-for="Name" class="col-6" />
-            </div>
-            <div class="row justify-content-center ">
-                <label class="col-4 col-md-2"></label>
-                <span asp-validation-for="Name" class="text-danger col-6" style="padding:0px"></span>
+                <div class="col-6" style="padding:0px;">
+                    <input id="Name" name="Name" v-model="form.Name" type="text" style="width:100%;" />
+                    <span class="text-danger" style="white-space: pre-wrap;">{{error.Name}}</span>
+                </div>
             </div>
 
             <div class="row mt-4 justify-content-center">
                 <label asp-for="Birthday" class="col-4 col-md-2"></label>
-                <input asp-for="Birthday" class="col-6" type="date" />
-            </div>
-            <div class="row justify-content-center ">
-                <label class="col-4 col-md-2"></label>
-                <span asp-validation-for="Birthday" class="text-danger col-6" style="padding:0px"></span>
+                <div class="col-6" style="padding:0px;">
+                    <input id="Birthday" name="Birthday" v-model="form.Birthday" type="date" style="width:100%;" />
+                    <span class="text-danger" style="white-space: pre-wrap;">{{error.Birthday}}</span>
+                </div>
             </div>
 
             <div class="row mt-4 justify-content-center">
                 <label asp-for="PhoneNumber" class="col-4 col-md-2"></label>
-                <input asp-for="PhoneNumber" class="col-6" />
-            </div>
-            <div class="row justify-content-center ">
-                <label class="col-4 col-md-2"></label>
-                <span asp-validation-for="PhoneNumber" class="text-danger col-6" style="padding:0px"></span>
+                <div class="col-6" style="padding:0px;">
+                    <input id="PhoneNumber" name="PhoneNumber" v-model="form.PhoneNumber" type="tel" style="width:100%;" />
+                    <span class="text-danger" style="white-space: pre-wrap;">{{error.PhoneNumber}}</span>
+                </div>
             </div>
 
             <div class="row mt-5 justify-content-center">
-                <button class="col-4 col-md-2 btn btn-outline-secondary border-0 bg-pink text-white" type="submit" id="btnSuscribe">儲存修改</button>
+                <button class="col-4 col-md-2 btn btn-outline-secondary border-0 bg-pink text-white" type="button" id="btnSuscribe" v-on:click="RegisterPost">確定送出</button>
             </div>
-        </form>
+        </div>
         <!-- 初次登入設定資料 ends -->
     </div>
 </div>
@@ -105,31 +98,85 @@
         var RegisterApp = new Vue({
             el: '#Register',
             data: {
-                email: { data: '', error: false, errorMsg: '' },
-                password: { data: '', error: false, errorMsg: '' },
-                passwordConfirmed: { data: '', error: false, errorMsg: '' }
+                form: {
+                    Email: '',
+                    Password: '',
+                    PasswordConfirmed: '',
+                    UserName: '',
+                    Name: '',
+                    Birthday: '',
+                    PhoneNumber: ''
+                },
+                error: {
+                    Email: '',
+                    Password: '',
+                    PasswordConfirmed: '',
+                    UserName: '',
+                    Name: '',
+                    Birthday: '',
+                    PhoneNumber: ''
+                },
+                currentInputField: '',
+                inputed: false
             },
             computed: {
                 getEmail: function() {
-                    return this.email.data;
+                    return this.form.Email;
                 },
                 getPassword: function() {
-                    return this.password.data;
+                    return this.form.Password;
                 },
                 getPasswordConfirmed: function() {
-                    return this.passwordConfirmed.data;
+                    return this.form.PasswordConfirmed;
+                },
+                getUserName: function(newQuestion, oldQuestion) {
+                    return this.form.UserName;
+                },
+                getName: function(newQuestion, oldQuestion) {
+                    return this.form.Name;
+                },
+                getBirthday: function(newQuestion, oldQuestion) {
+                    return this.form.Birthday;
+                },
+                getPhoneNumber: function(newQuestion, oldQuestion) {
+                    return this.form.PhoneNumber;
                 }
             },
-            watch: {// 如果 `email` 发生改变，这个函数就会运行
+            watch: {
                 getEmail: function(newQuestion, oldQuestion) {
-                    this.debouncedGetEmail();
+                    this.inputed = true;
+                    this.currentInputField = 'Email';
+                    this.debouncedCheckInput();
                 },
                 getPassword: function(newQuestion, oldQuestion) {
-                    this.pwdCompare();
-                    this.debouncedGetPassword();
+                    this.inputed = true;
+                    this.currentInputField = 'Password';
+                    this.debouncedCheckInput();
                 },
                 getPasswordConfirmed: function(newQuestion, oldQuestion) {
-                    this.pwdCompare();
+                    this.inputed = true;
+                    this.currentInputField = 'PasswordConfirmed';
+                    this.debouncedCheckInput();
+                },
+                getUserName: function(newQuestion, oldQuestion) {
+                    this.inputed = true;
+                    this.currentInputField = 'UserName';
+                    this.debouncedCheckInput();
+                },
+                getName: function(newQuestion, oldQuestion) {
+                    this.inputed = true;
+                    this.currentInputField = 'Name';
+                    this.debouncedCheckInput();
+                },
+                getBirthday: function(newQuestion, oldQuestion) {
+                    this.inputed = true;
+                    this.currentInputField = 'Birthday';
+                    this.debouncedCheckInput();
+                },
+                getPhoneNumber: function(newQuestion, oldQuestion) {
+                    this.inputed = true;
+                    this.currentInputField = 'PhoneNumber';
+                    this.debouncedCheckInput();
                 }
             },
             created: function() {
@@ -138,55 +185,69 @@
                 // AJAX 请求直到用户输入完毕才会发出。想要了解更多关于
                 // `_.debounce` 函数 (及其近亲 `_.throttle`) 的知识，
                 // 请参考：https://lodash.com/docs#debounce
-                this.debouncedGetEmail = _.debounce(this.CheckEmail, 500);
-                this.debouncedGetPassword = _.debounce(this.CheckPassword, 500);
+                this.debouncedCheckInput = _.debounce(this.CheckInput, 500);
             },
             methods: {
-                pwdCompare: function() {
-                    if (this.password.data != this.passwordConfirmed.data) {
-                        this.passwordConfirmed.error = true;
-                        this.passwordConfirmed.errorMsg = '與輸入的密碼不一致';
-                    }
-                    else {
-                        this.passwordConfirmed.error = false;
-                        this.passwordConfirmed.errorMsg = '';
-                    }
-                },
-                CheckEmail: function() {
-                    axios.get(`/Login/api/CheckEmail?Email=${this.email.data}`)
-                        .then((response) => {
-                            console.log(response);
-                            let errorMsg = response.data;
+                RegisterPost: function() {
 
-                            if (errorMsg != '') {
-                                this.email.error = true;
-                                this.email.errorMsg = errorMsg;
-                            }
-                            else {
-                                this.email.error = false;
-                                this.email.errorMsg = '';
-                            }
-                        })
-                        .catch((error) => console.log(error));
-                },
-                CheckPassword: function() {
-                    axios.get(`/Login/api/CheckPassword?Password=${this.password.data}`)
-                        .then((response) => {
-                            console.log(response);
-                            let errorMsg = response.data;
+                    for (let key in this.error) {
+                        this.error[key] = '';
+                    }
 
-                            if (errorMsg != '') {
-                                this.password.error = true;
-                                this.password.errorMsg = errorMsg;
-                            }
-                            else {
-                                this.password.error = false;
-                                this.password.errorMsg = '';
-                            }
+                    axios.post('/Login/api/Register', this.form)
+                        .then((response) => {
+                            //console.log(response);
+                            location.href = '/Login/Index';
                         })
-                        .catch((error) => console.log(error));
+                        .catch((error) => {
+                            //console.log(error);
+
+                            if (error.response.status === 400) {
+                                let errorObj = error.response.data.errors;
+                                //console.log(errorObj);
+
+                                for (let key in errorObj) {
+                                    this.error[key] = errorObj[key].join('\n');
+                                }
+
+                                //console.log(this.error);
+                            }
+                        });
+                },
+                CheckInput: function() {
+                    //當使用者輸入某個欄位時，會即時驗證輸入的質是否有符合規範
+                    axios.post('/Login/api/CheckInput', this.form)
+                        .then((response) => {
+                            //console.log(response);
+                        })
+                        .catch((error) => {
+                            //console.log(error);
+
+                            if (error.response.status === 400) {
+                                let errorObj = error.response.data.errors;
+                                if (errorObj[this.currentInputField] != undefined) {
+                                    this.error[this.currentInputField] = errorObj[this.currentInputField].join('\n');
+                                }
+                                else {
+                                    this.error[this.currentInputField] = '';
+                                }
+
+                                //console.log(this.error);
+                            }
+                        });
                 }
             }
         });
+
+        //當使用者已輸入資料尚未儲存變更，卻離開或重整視窗時，就會跳出以下警告
+        window.onbeforeunload = function() {
+            if (RegisterApp.inputed) {
+                window.event.returnValue = '您輸入的資料尚未儲存，是否要離開此畫面';
+                if (window.event.reason == false) {
+                    window.event.stopPropagation();
+                }
+            }
+        }
+
     </script>
 }

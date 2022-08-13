@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
+using arTWander.ModelValid;
 
 namespace arTWander.Models;
 
@@ -7,7 +10,8 @@ public partial class User
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int UserId { get; set; }
-    
+
+    [CheckEmail(ErrorMessage= "該Email用戶已註冊")]
     [Display(Name = "電子信箱")]
     [Required(ErrorMessage = "該欄位必填")]
     [EmailAddress(ErrorMessage = "請輸入正確的Email")]
@@ -19,7 +23,14 @@ public partial class User
     [Required(ErrorMessage = "該欄位必填")]
     public string Password { get; set; }
 
+    [NotMapped]
+    [Display(Name = "確認密碼")]
+    [Required(ErrorMessage = "該欄位必填")]
+    [Compare("Password", ErrorMessage = "與輸入的密碼不一致")]
+    public string PasswordConfirmed { get; set; }
+
     [Display(Name = "電子信箱是否驗證")]
+    [BindNever]
     public bool? EmailConfirmed { get; set; }
 
     [Display(Name = "會員暱稱")]
@@ -39,21 +50,28 @@ public partial class User
     public string? Picture { get; set; }
 
     [Display(Name = "啟用二階段驗證")]
+    [BindNever]
     public bool? TwoFactorEnabled { get; set; }
 
     [Display(Name = "鎖定時間")]
+    [BindNever]
     public DateTime? LockoutEndDateTime { get; set; }
 
     [Display(Name = "帳戶鎖定")]
+    [BindNever]
     public bool? LockoutEnabled { get; set; }
 
     [Display(Name = "最後登入時間")]
+    [BindNever]
     public DateTime? LastLoginDateTime { get; set; }
 
     [Display(Name = "登入失敗次數")]
+    [BindNever]
     public int? AccessFailedCount { get; set; }
 
     public int RoleId { get; set; }
 
+    [JsonIgnore]
+    [BindNever]
     public virtual Role Role { get; set; }
 }

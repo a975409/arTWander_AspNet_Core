@@ -1,18 +1,30 @@
 using arTWander.Authentications;
 using arTWander.Data;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews(options =>
+builder.Services
+.AddControllersWithViews(options =>
 {
     //所有controller都要驗證
     //options.Filters.Add(new AuthorizeFilter());
-}).AddRazorRuntimeCompilation();
+})
+.AddRazorRuntimeCompilation()
+.AddNewtonsoftJson(options =>//針對API回傳的JSON格式做設定
+{
+    //設定時間格式
+    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
 
-
+    //忽略值為null的屬性值
+    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+});
 
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("arTWanderDatabase")));
 builder.Services.AddSession(options =>

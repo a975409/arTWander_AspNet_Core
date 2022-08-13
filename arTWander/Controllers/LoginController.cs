@@ -2,16 +2,18 @@
 using arTWander.Data;
 using arTWander.Models;
 using arTWander.Models.Dtos;
+using arTWander.ModelValid;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
 namespace arTWander.Controllers
 {
-	[Route("[controller]")]
+    [ApiController,Route("[controller]")]
 	public class LoginController : Controller
 	{
 		private readonly ApplicationContext _context;
@@ -28,40 +30,42 @@ namespace arTWander.Controllers
 			return View();
 		}
 
-        [HttpGet("Register")]
+		[Route("Detail")]
 		public IActionResult Detail()
 		{
 			return View();
 		}
 
-        [ValidateAntiForgeryToken]
-        [HttpPost("Register")]
-        public IActionResult Detail(RegisterUser user)
+		[HttpPost("api/Register")]
+        public IActionResult Register(RegisterUser registerUser)
         {
-			if (!ModelState.IsValid)
-				return View(user);
-			
-			var result = new User
+			var user = new User
 			{
-				Email = user.Email,
-				Password = user.Password.ToMD5(),
-				Name = user.Name,
-				RoleId = 2,
-				Birthday = user.Birthday,
-				PhoneNumber = user.PhoneNumber,
-				Picture = user.Picture,
-				UserName = user.UserName
+				Email = registerUser.Email,
+				Password = registerUser.Password.ToMD5(),
+				PasswordConfirmed = registerUser.PasswordConfirmed,
+				UserName = registerUser.UserName,
+				Name = registerUser.Name,
+				Birthday = registerUser.Birthday,
+				PhoneNumber = registerUser.PhoneNumber
 			};
 
-			_context.Users.Add(result);
-			_context.SaveChanges();
-            TempData["Success"] = true;
-			
-			return RedirectToAction("Index");
+			user.RoleId = 2;
+			_context.Users.Add(user);
+
+			try
+			{
+				_context.SaveChanges();
+				return CreatedAtAction("Index", null);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, ex.Message);
+			}
         }
 
         [HttpPost("api/UserLogin")]
-		public async Task<IActionResult> UserLogin([FromBody]UserLogin value)
+		public async Task<IActionResult> UserLogin(UserLogin value)
 		{
 			var result = _context.Users.Where(m => m.Email == value.Email && m.Password == value.Password.ToMD5()).FirstOrDefault();
 
@@ -88,33 +92,15 @@ namespace arTWander.Controllers
 			return Ok("登入成功");
 		}
 
-		[HttpGet("api/CheckEmail")]
-		public async Task<IActionResult> CheckEmail([Bind("Email"), FromQuery] RegisterUser registerUser)
-		{
-			if (ModelState["Email"].ValidationState != ModelValidationState.Valid)
-			{
-				string errorMsg = ModelState["Email"].Errors[0].ErrorMessage;
-				return Ok(errorMsg);
-			}
-
-			var result = _context.Users.Where(m => m.Email == registerUser.Email).FirstOrDefault();
-
-			if (result != null)
-				return Ok("此Email已被註冊!!");
-			else
-				return Ok("");
-		}
-
-		[HttpGet("api/CheckPassword")]
-		public async Task<IActionResult> CheckPassword([Bind("Password"), FromQuery] RegisterUser registerUser)
-		{
-			if (ModelState["Password"].ValidationState != ModelValidationState.Valid)
-			{
-				string errorMsg = ModelState["Password"].Errors[0].ErrorMessage;
-				return Ok(errorMsg);
-			}
-			else
-				return Ok("");
-		}
-	}
+		/// <summary>
+		/// 僅用來驗證輸入參數是否符合規範
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns></returns>
+        [HttpPost("api/CheckInput")]
+        public IActionResult CheckInput(RegisterUser user)
+        {
+			return Ok();
+        }
+    }
 }
