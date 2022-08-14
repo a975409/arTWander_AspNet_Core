@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
-using arTWander.ModelValid;
+using arTWander.Helpers;
 
 namespace arTWander.Models;
 
@@ -47,7 +47,7 @@ public partial class User
     public string? PhoneNumber { get; set; }
 
     [Display(Name = "照片上傳")]
-    public string? Picture { get; set; }
+    public byte[]? Picture { get; set; }
 
     [Display(Name = "啟用二階段驗證")]
     [BindNever]

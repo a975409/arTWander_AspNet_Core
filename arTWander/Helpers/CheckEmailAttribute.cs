@@ -1,7 +1,7 @@
 ﻿using arTWander.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace arTWander.ModelValid
+namespace arTWander.Helpers
 {
     public class CheckEmailAttribute : ValidationAttribute
     {

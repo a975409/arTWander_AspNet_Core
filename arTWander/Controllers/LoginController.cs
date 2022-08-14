@@ -1,8 +1,8 @@
 ﻿using arTWander.Authentications;
 using arTWander.Data;
+using arTWander.Helpers;
 using arTWander.Models;
 using arTWander.Models.Dtos;
-using arTWander.ModelValid;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -21,6 +21,7 @@ namespace arTWander.Controllers
 		public LoginController(ApplicationContext context)
 		{
 			_context = context;
+			
 		}
 
 		[Route("~/")]
@@ -36,8 +37,14 @@ namespace arTWander.Controllers
 			return View();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="registerUser"></param>
+		/// <param name="file">檔案上傳：https://docs.microsoft.com/zh-tw/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0#file-upload-scenarios</param>
+		/// <returns></returns>
 		[HttpPost("api/Register")]
-        public IActionResult Register(RegisterUser registerUser)
+        public IActionResult Register(RegisterUser registerUser, [UploadFileValid] IFormFile file)
         {
 			var user = new User
 			{
@@ -49,6 +56,15 @@ namespace arTWander.Controllers
 				Birthday = registerUser.Birthday,
 				PhoneNumber = registerUser.PhoneNumber
 			};
+
+			if (file != null && file.Length > 0)
+			{
+				using (var ms = new MemoryStream())
+				{
+					file.CopyTo(ms);
+					user.Picture = ms.ToArray();
+				}
+			}
 
 			user.RoleId = 2;
 			_context.Users.Add(user);

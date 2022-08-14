@@ -215,7 +215,7 @@
                         });
                 },
                 CheckInput: function() {
-                    //當使用者輸入某個欄位時，會即時驗證輸入的質是否有符合規範
+                    //當使用者輸入某個欄位時，會即時驗證輸入的值是否有符合規範
                     axios.post('/Login/api/CheckInput', this.form)
                         .then((response) => {
                             //console.log(response);
