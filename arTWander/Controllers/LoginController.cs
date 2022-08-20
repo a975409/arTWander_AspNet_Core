@@ -17,11 +17,12 @@ namespace arTWander.Controllers
 	public class LoginController : Controller
 	{
 		private readonly ApplicationContext _context;
+		private readonly IHttpContextAccessor _httpContextAccessor;
 
-		public LoginController(ApplicationContext context)
+		public LoginController(ApplicationContext context, IHttpContextAccessor httpContextAccessor)
 		{
 			_context = context;
-			
+			_httpContextAccessor = httpContextAccessor;
 		}
 
 		[Route("~/")]
@@ -42,10 +43,12 @@ namespace arTWander.Controllers
 		/// </summary>
 		/// <param name="registerUser"></param>
 		/// <param name="file">檔案上傳：https://docs.microsoft.com/zh-tw/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0#file-upload-scenarios</param>
+		/// 如果API會接受上傳檔案和其他參數，記得參數的部分要標記FromForm，因為前端axios.post會在header標記 "Content-Type": "multipart/form-data"
+		/// https://blog.csdn.net/qq994877603/article/details/112281681
 		/// <returns></returns>
 		[HttpPost("api/Register")]
-        public IActionResult Register(RegisterUser registerUser, [UploadFileValid] IFormFile file)
-        {
+		public IActionResult Register([FromForm] RegisterUser registerUser, [UploadFileValid] IFormFile? picfile)
+		{
 			var user = new User
 			{
 				Email = registerUser.Email,
@@ -57,11 +60,11 @@ namespace arTWander.Controllers
 				PhoneNumber = registerUser.PhoneNumber
 			};
 
-			if (file != null && file.Length > 0)
+			if (picfile != null && picfile.Length > 0)
 			{
 				using (var ms = new MemoryStream())
 				{
-					file.CopyTo(ms);
+					picfile.CopyTo(ms);
 					user.Picture = ms.ToArray();
 				}
 			}
@@ -72,13 +75,13 @@ namespace arTWander.Controllers
 			try
 			{
 				_context.SaveChanges();
-				return CreatedAtAction("Index", null);
+				return Ok(user.UserId);
 			}
 			catch (Exception ex)
 			{
 				return StatusCode(500, ex.Message);
 			}
-        }
+		}
 
         [HttpPost("api/UserLogin")]
 		public async Task<IActionResult> UserLogin(UserLogin value)

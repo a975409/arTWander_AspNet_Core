@@ -46,6 +46,7 @@ builder.Services.AddSession(options =>
 });
 //將Session放置到伺服器的內建記憶體
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddHttpContextAccessor();
 
 #region 自訂驗證方案
 

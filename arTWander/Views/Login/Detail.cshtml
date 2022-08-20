@@ -17,18 +17,18 @@
         <!-- 初次登入設定資料 starts -->
         <div class="container p-0 w-100 rounded-lg mt-5 ">
 
-            @*<div class="row mt-5 justify-content-center ">
-            <!-- <label class="col-7 col-md-2 " for="userAvatar">頭像</label> -->
-            <!-- 消除input type="file" UI的方法 https://www.wfublog.com/2017/10/input-type-file-upload-css-skill.html -->
-            <label class=" col-3 col-md-1 p-0" for="Picture" role="button">
-            <div id="userAvatarDiv">
-            <img id="userAvatarImg" class="rounded-circle d-flex " width="100px" height="100px" src="/default.png" style="object-fit: cover;" alt="">
-            <i class="fa fa-camera " aria-hidden="true"></i>
-            <div id="fakeDiv"></div>
+            <div class="row mt-5 justify-content-center ">
+                <!-- <label class="col-7 col-md-2 " for="userAvatar">頭像</label> -->
+                <!-- 消除input type="file" UI的方法 https://www.wfublog.com/2017/10/input-type-file-upload-css-skill.html -->
+                <label class=" col-3 col-md-1 p-0" for="picfile" role="button">
+                    <div id="userAvatarDiv">
+                        <img id="userAvatarImg" class="rounded-circle d-flex " width="100px" height="100px" src="/default.png" style="object-fit: cover;" alt="">
+                        <i class="fa fa-camera " aria-hidden="true"></i>
+                        <div id="fakeDiv"></div>
+                    </div>
+                    <input class="d-none" name="picfile" id="picfile" type="file" v-on:change="fileChange">
+                </label><br>
             </div>
-            <input class="d-none" name="Picture" id="Picture" type="file">
-            </label><br>
-            </div>*@
             <div class="row mt-4 justify-content-center ">
                 <label asp-for="Email" class="col-4 col-md-2"></label>
                 <div class="col-6" style="padding:0px;">
@@ -105,7 +105,8 @@
                     UserName: '',
                     Name: '',
                     Birthday: '',
-                    PhoneNumber: ''
+                    PhoneNumber: '',
+                    picfile:''
                 },
                 error: {
                     Email: '',
@@ -114,7 +115,8 @@
                     UserName: '',
                     Name: '',
                     Birthday: '',
-                    PhoneNumber: ''
+                    PhoneNumber: '',
+                    picfile:''
                 },
                 currentInputField: '',
                 inputed: false
@@ -194,23 +196,24 @@
                         this.error[key] = '';
                     }
 
-                    axios.post('/Login/api/Register', this.form)
+                    //https://www.iaspnetcore.com/blog/blogpost/5c1db1cb1d51ae0eec99021f#mcetoc_1g0i0tegq2p
+                    let config = {
+                        headers: {
+                            "Content-Type": "multipart/form-data"
+                        }
+                    };
+
+                    axios.post('/Login/api/Register', this.form, config)
                         .then((response) => {
-                            //console.log(response);
                             location.href = '/Login/Index';
                         })
                         .catch((error) => {
-                            //console.log(error);
-
                             if (error.response.status === 400) {
                                 let errorObj = error.response.data.errors;
-                                //console.log(errorObj);
 
                                 for (let key in errorObj) {
                                     this.error[key] = errorObj[key].join('\n');
                                 }
-
-                                //console.log(this.error);
                             }
                         });
                 },
@@ -218,11 +221,8 @@
                     //當使用者輸入某個欄位時，會即時驗證輸入的值是否有符合規範
                     axios.post('/Login/api/CheckInput', this.form)
                         .then((response) => {
-                            //console.log(response);
                         })
                         .catch((error) => {
-                            //console.log(error);
-
                             if (error.response.status === 400) {
                                 let errorObj = error.response.data.errors;
                                 if (errorObj[this.currentInputField] != undefined) {
@@ -231,10 +231,15 @@
                                 else {
                                     this.error[this.currentInputField] = '';
                                 }
-
-                                //console.log(this.error);
                             }
                         });
+                },
+                fileChange: function(e) {
+                    //https://www.dotblogs.com.tw/kinanson/2017/06/07/092521
+                    this.form.picfile = e.target.files[0];
+
+                    let objUrl = URL.createObjectURL(e.target.files[0]);
+                    document.getElementById('userAvatarImg').src = objUrl;
                 }
             }
         });
